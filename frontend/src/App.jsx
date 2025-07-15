@@ -7,6 +7,9 @@ import FeedbackForm from './components/FeedbackForm';
 import Swal from 'sweetalert2';
 import './App.css';
 
+// Get the base API URL from environment variable
+const API_BASE = import.meta.env.VITE_API_BASE_URL;
+
 function App() {
   const [feedbacks, setFeedbacks] = useState([]);
   const [isLoggedIn, setIsLoggedIn] = useState(!!localStorage.getItem('token'));
@@ -14,7 +17,7 @@ function App() {
   const addFeedback = async (feedback) => {
     try {
       await axios.post(
-        'http://localhost:5000/api/feedback',
+        `${API_BASE}/api/feedback`,
         feedback,
         {
           headers: {
@@ -22,7 +25,7 @@ function App() {
           },
         }
       );
-      const res = await axios.get('http://localhost:5000/api/feedback');
+      const res = await axios.get(`${API_BASE}/api/feedback`);
       setFeedbacks(res.data);
       Swal.fire('Success', 'Feedback sent successfully!', 'success');
     } catch (err) {
@@ -33,8 +36,12 @@ function App() {
 
   useEffect(() => {
     const fetchData = async () => {
-      const res = await axios.get('http://localhost:5000/api/feedback');
-      setFeedbacks(res.data);
+      try {
+        const res = await axios.get(`${API_BASE}/api/feedback`);
+        setFeedbacks(res.data);
+      } catch (err) {
+        console.error('Error fetching feedbacks', err);
+      }
     };
     fetchData();
   }, []);
@@ -57,7 +64,9 @@ function App() {
               isLoggedIn ? (
                 <>
                   <FeedbackForm onSubmit={addFeedback} />
-                  <button onClick={handleLogout} style={{marginTop:'20px', width:'20%'}} className="logout-btn">Logout</button>
+                  <button onClick={handleLogout} style={{ marginTop: '20px', width: '20%' }} className="logout-btn">
+                    Logout
+                  </button>
                 </>
               ) : (
                 <Navigate to="/login" />
