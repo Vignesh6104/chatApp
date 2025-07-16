@@ -1,6 +1,5 @@
 // backend/server.js
 const express = require('express');
-const cors = require('cors');
 const dotenv = require('dotenv');
 const FeedbackRoute = require('./routes/FeedbackRoute');
 const AuthRoute = require('./routes/authRoutes');
@@ -12,15 +11,16 @@ const PORT = process.env.PORT || 5000;
 
 const cors = require('cors');
 
-const allowedOrigins = [
-  'http://localhost:5173', // for local development
-  'https://feed-back-one.vercel.app' // ✅ your Vercel frontend domain
-];
+const allowedOrigins = ['https://feed-back-nten-x4fw6ugqj-vignesh6104s-projects.vercel.app'];
 
 app.use(cors({
-  origin: allowedOrigins,
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: function(origin, callback) {
+    if (!origin || allowedOrigins.includes(origin)) {
+      callback(null, true);
+    } else {
+      callback(new Error('Not allowed by CORS'));
+    }
+  }
 }));
 
 app.use(express.json());
