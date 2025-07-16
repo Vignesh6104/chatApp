@@ -15,7 +15,7 @@ function App() {
   const addFeedback = async (feedback) => {
     try {
       await axios.post(
-        `http://localhost:5000/api/feedback`,
+        `${import.meta.env.VITE_API_URL}/api/feedback`,
         feedback,
         {
           headers: {
@@ -23,7 +23,7 @@ function App() {
           },
         }
       );
-      const res = await axios.get(`http://localhost:5000/api/feedback`);
+      const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/feedback`);
       setFeedbacks(res.data);
       Swal.fire('Success', 'Feedback sent successfully!', 'success');
     } catch (err) {
@@ -35,7 +35,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`http://localhost:5000/api/feedback`);
+        const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/feedback`);
         setFeedbacks(res.data);
       } catch (err) {
         console.error('Error fetching feedbacks', err);
