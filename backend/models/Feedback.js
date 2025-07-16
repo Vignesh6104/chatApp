@@ -1,12 +1,15 @@
 const mongoose = require('mongoose');
-const { feedbackConnection } = require('../db');
 
 const feedbackSchema = new mongoose.Schema({
-  name: String,
-  feedback: String,
-  user: {
-    type: mongoose.Schema.Types.ObjectId,
-    ref: 'User'
+  name: {
+    type: String,
+    required: true,
+    trim: true
+  },
+  feedback: {
+    type: String,
+    required: true,
+    trim: true
   },
   createdAt: {
     type: Date,
@@ -14,4 +17,4 @@ const feedbackSchema = new mongoose.Schema({
   }
 });
 
-module.exports = feedbackConnection.model('Feedback', feedbackSchema);
+module.exports = mongoose.model('Feedback', feedbackSchema);

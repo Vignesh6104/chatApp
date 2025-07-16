@@ -3,7 +3,6 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
-const API_BASE = import.meta.env.VITE_API_BASE_URL; // ✅ Import environment variable
 
 const Login = ({ setIsLoggedIn }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -16,7 +15,7 @@ const Login = ({ setIsLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`${API_BASE}/api/auth/login`, form); // ✅ Use env variable
+      const res = await axios.post(`http://localhost:5000/api/auth/login`, form);
       localStorage.setItem('token', res.data.token);
       setIsLoggedIn(true);
       Swal.fire('Success', 'Login successful!', 'success');
@@ -50,7 +49,7 @@ const Login = ({ setIsLoggedIn }) => {
         <button
           style={{ marginLeft: '20px' }}
           onClick={(e) => {
-            e.preventDefault(); // ✅ prevent form submit on button click
+            e.preventDefault();
             navigate('/register');
           }}
           className="register-btn"
