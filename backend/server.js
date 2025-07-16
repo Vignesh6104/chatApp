@@ -10,16 +10,19 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// CORS setup
+const cors = require('cors');
+
 const allowedOrigins = [
-  'http://localhost:5173',
-  'https://feedback-64kwb82ti-vignesh6104s-projects.vercel.app'
+  'http://localhost:5173', // for local development
+  'https://feed-back-one.vercel.app' // ✅ your Vercel frontend domain
 ];
+
 app.use(cors({
   origin: allowedOrigins,
   methods: ['GET', 'POST'],
   credentials: true
 }));
+
 app.use(express.json());
 
 // Routes
