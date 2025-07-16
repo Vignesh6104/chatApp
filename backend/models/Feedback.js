@@ -1,10 +1,11 @@
-const { feedbackConnection } = require('../server'); // use the specific connection
+const mongoose = require('mongoose');
+const { feedbackConnection } = require('../db');
 
-const feedbackSchema = new feedbackConnection.Schema({
+const feedbackSchema = new mongoose.Schema({
   name: String,
   feedback: String,
   user: {
-    type: feedbackConnection.Schema.Types.ObjectId,
+    type: mongoose.Schema.Types.ObjectId,
     ref: 'User'
   },
   createdAt: {
