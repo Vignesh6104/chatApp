@@ -3,6 +3,8 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
+const API_BASE = import.meta.env.VITE_API_BASE_URL; // ✅ Import environment variable
+
 const Login = ({ setIsLoggedIn }) => {
   const [form, setForm] = useState({ email: '', password: '' });
   const navigate = useNavigate();
@@ -14,9 +16,9 @@ const Login = ({ setIsLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post('http://localhost:5000/api/auth/login', form);
+      const res = await axios.post(`${API_BASE}/api/auth/login`, form); // ✅ Use env variable
       localStorage.setItem('token', res.data.token);
-      setIsLoggedIn(true); // this triggers feedback form in App
+      setIsLoggedIn(true);
       Swal.fire('Success', 'Login successful!', 'success');
       navigate('/');
     } catch (error) {
@@ -45,10 +47,16 @@ const Login = ({ setIsLoggedIn }) => {
           required
         />
         <button type="submit">Login</button>
-        <button style={{marginLeft:'20px'}} onClick={() => navigate('/register')} className="register-btn">
+        <button
+          style={{ marginLeft: '20px' }}
+          onClick={(e) => {
+            e.preventDefault(); // ✅ prevent form submit on button click
+            navigate('/register');
+          }}
+          className="register-btn"
+        >
           Register User
         </button>
-
       </form>
     </div>
   );
