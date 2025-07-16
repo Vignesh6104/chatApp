@@ -45,6 +45,10 @@ const Login = ({ setIsLoggedIn }) => {
           required
         />
         <button type="submit">Login</button>
+        <button style={{marginLeft:'20px'}} onClick={() => navigate('/register')} className="register-btn">
+          Register User
+        </button>
+
       </form>
     </div>
   );

@@ -4,11 +4,9 @@ import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-d
 import Register from './components/Register';
 import Login from './components/Login';
 import FeedbackForm from './components/FeedbackForm';
+import Intro from './components/Intro';
 import Swal from 'sweetalert2';
 import './App.css';
-
-// Get the base API URL from environment variable
-const API_BASE = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -17,7 +15,7 @@ function App() {
   const addFeedback = async (feedback) => {
     try {
       await axios.post(
-        `${API_BASE}/api/feedback`,
+        `http://localhost:5000/api/feedback`,
         feedback,
         {
           headers: {
@@ -25,7 +23,7 @@ function App() {
           },
         }
       );
-      const res = await axios.get(`${API_BASE}/api/feedback`);
+      const res = await axios.get(`http://localhost:5000/api/feedback`);
       setFeedbacks(res.data);
       Swal.fire('Success', 'Feedback sent successfully!', 'success');
     } catch (err) {
@@ -37,7 +35,7 @@ function App() {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const res = await axios.get(`${API_BASE}/api/feedback`);
+        const res = await axios.get(`http://localhost:5000/api/feedback`);
         setFeedbacks(res.data);
       } catch (err) {
         console.error('Error fetching feedbacks', err);
@@ -60,6 +58,12 @@ function App() {
         <Routes>
           <Route
             path="/"
+            element={
+              isLoggedIn ? <Navigate to="/feedback" /> : <Intro />
+            }
+          />
+          <Route
+            path="/feedback"
             element={
               isLoggedIn ? (
                 <>
