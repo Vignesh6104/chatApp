@@ -3,6 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Register = () => {
   const [form, setForm] = useState({ name: '', email: '', password: '' });
@@ -13,25 +14,45 @@ const Register = () => {
   };
 
   const handleSubmit = async (e) => {
-  e.preventDefault();
-  console.log('Form submitted:', form);
-  try {
-    await axios.post('https://feedbackproject.onrender.com/api/auth/register', form);
-    Swal.fire('Success', 'Registration successful! Please login.', 'success');
-    navigate('/login');
-  } catch (error) {
-    console.error('Registration error:', error.response?.data || error.message);
-    Swal.fire('Error', error.response?.data?.error || 'Registration failed', 'error');
-  }
-};
+    e.preventDefault();
+    console.log('Form submitted:', form);
+    try {
+      await axios.post(`${BASE_URL}/auth/register`, form);
+      Swal.fire('Success', 'Registration successful! Please login.', 'success');
+      navigate('/login');
+    } catch (error) {
+      console.error('Registration error:', error.response?.data || error.message);
+      Swal.fire('Error', error.response?.data?.error || 'Registration failed', 'error');
+    }
+  };
 
   return (
     <div className="auth-container">
       <h2>Register</h2>
       <form onSubmit={handleSubmit}>
-        <input name="name" placeholder="Name" value={form.name} onChange={handleChange} required />
-        <input name="email" type="email" placeholder="Email" value={form.email} onChange={handleChange} required />
-        <input name="password" type="password" placeholder="Password" value={form.password} onChange={handleChange} required />
+        <input
+          name="name"
+          placeholder="Name"
+          value={form.name}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="email"
+          type="email"
+          placeholder="Email"
+          value={form.email}
+          onChange={handleChange}
+          required
+        />
+        <input
+          name="password"
+          type="password"
+          placeholder="Password"
+          value={form.password}
+          onChange={handleChange}
+          required
+        />
         <button type="submit">Register</button>
       </form>
     </div>

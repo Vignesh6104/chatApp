@@ -8,6 +8,7 @@ import Intro from './components/Intro';
 import Swal from 'sweetalert2';
 import './App.css';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 function App() {
   const [feedbacks, setFeedbacks] = useState([]);
@@ -16,7 +17,7 @@ function App() {
   const addFeedback = async (feedback) => {
     try {
       await axios.post(
-        `https://feedbackproject.onrender.com/api/feedback`,
+        `${BASE_URL}/feedback`,
         feedback,
         {
           headers: {
@@ -24,19 +25,34 @@ function App() {
           },
         }
       );
-      const res = await axios.get(`https://feedbackproject.onrender.com/api/feedback`);
+      const res = await axios.get(`${BASE_URL}/feedback`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
       setFeedbacks(res.data);
       Swal.fire('Success', 'Feedback sent successfully!', 'success');
     } catch (err) {
       console.error('Error submitting feedback', err);
-      Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+      if (err.response?.status === 401) {
+        localStorage.removeItem('token');
+        setIsLoggedIn(false);
+        Swal.fire('Session expired', 'Please log in again.', 'warning');
+      } else {
+        Swal.fire('Error', 'Something went wrong. Please try again.', 'error');
+      }
     }
   };
 
   useEffect(() => {
     const fetchData = async () => {
+      if (!localStorage.getItem('token')) return;
       try {
-        const res = await axios.get(`https://feedbackproject.onrender.com/api/feedback`);
+        const res = await axios.get(`${BASE_URL}/feedback`, {
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem('token')}`,
+          },
+        });
         setFeedbacks(res.data);
       } catch (err) {
         console.error('Error fetching feedbacks', err);
@@ -59,9 +75,7 @@ function App() {
         <Routes>
           <Route
             path="/"
-            element={
-              isLoggedIn ? <Navigate to="/feedback" /> : <Intro />
-            }
+            element={isLoggedIn ? <Navigate to="/feedback" /> : <Intro />}
           />
           <Route
             path="/feedback"
@@ -69,7 +83,11 @@ function App() {
               isLoggedIn ? (
                 <>
                   <FeedbackForm onSubmit={addFeedback} />
-                  <button onClick={handleLogout} style={{ marginTop: '20px', width: '20%' }} className="logout-btn">
+                  <button
+                    onClick={handleLogout}
+                    style={{ marginTop: '20px', width: '20%' }}
+                    className="logout-btn"
+                  >
                     Logout
                   </button>
                 </>

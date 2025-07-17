@@ -3,6 +3,7 @@ import axios from 'axios';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 
+const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
 const Login = ({ setIsLoggedIn }) => {
   const [form, setForm] = useState({ email: '', password: '' });
@@ -15,7 +16,7 @@ const Login = ({ setIsLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`https://feedbackproject.onrender.com/api/auth/login`, form);
+      const res = await axios.post(`${BASE_URL}/auth/login`, form);
       localStorage.setItem('token', res.data.token);
       setIsLoggedIn(true);
       Swal.fire('Success', 'Login successful!', 'success');
