@@ -17,7 +17,7 @@ const Register = () => {
     e.preventDefault();
     console.log('Form submitted:', form);
     try {
-      await axios.post(`${BASE_URL}/auth/register`, form);
+      await axios.post(`${BASE_URL}/api/auth/register`, form);
       Swal.fire('Success', 'Registration successful! Please login.', 'success');
       navigate('/login');
     } catch (error) {

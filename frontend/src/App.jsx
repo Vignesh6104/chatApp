@@ -17,7 +17,7 @@ function App() {
   const addFeedback = async (feedback) => {
     try {
       await axios.post(
-        `${BASE_URL}/feedback`,
+        `${BASE_URL}/api/feedback`,
         feedback,
         {
           headers: {
@@ -25,7 +25,7 @@ function App() {
           },
         }
       );
-      const res = await axios.get(`${BASE_URL}/feedback`, {
+      const res = await axios.get(`${BASE_URL}/api/feedback`, {
         headers: {
           Authorization: `Bearer ${localStorage.getItem('token')}`,
         },
@@ -48,7 +48,7 @@ function App() {
     const fetchData = async () => {
       if (!localStorage.getItem('token')) return;
       try {
-        const res = await axios.get(`${BASE_URL}/feedback`, {
+        const res = await axios.get(`${BASE_URL}/api/feedback`, {
           headers: {
             Authorization: `Bearer ${localStorage.getItem('token')}`,
           },
