@@ -15,7 +15,7 @@ const Login = ({ setIsLoggedIn }) => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const res = await axios.post(`http://localhost:5000/api/auth/login`, form);
+      const res = await axios.post(`https://feedbackproject.onrender.com/api/auth/login`, form);
       localStorage.setItem('token', res.data.token);
       setIsLoggedIn(true);
       Swal.fire('Success', 'Login successful!', 'success');

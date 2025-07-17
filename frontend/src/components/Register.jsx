@@ -16,7 +16,7 @@ const Register = () => {
   e.preventDefault();
   console.log('Form submitted:', form);
   try {
-    await axios.post('http://localhost:5000/api/auth/register', form);
+    await axios.post('https://feedbackproject.onrender.com/api/auth/register', form);
     Swal.fire('Success', 'Registration successful! Please login.', 'success');
     navigate('/login');
   } catch (error) {
