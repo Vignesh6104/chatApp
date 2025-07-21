@@ -17,10 +17,14 @@ const Login = ({ setIsLoggedIn }) => {
     e.preventDefault();
     try {
       const res = await axios.post(`${BASE_URL}/api/auth/login`, form);
+
+      // ✅ Store token and user name in localStorage
       localStorage.setItem('token', res.data.token);
+      localStorage.setItem('user', res.data.user);
+
       setIsLoggedIn(true);
       Swal.fire('Success', 'Login successful!', 'success');
-      navigate('/');
+      navigate('/chat');
     } catch (error) {
       Swal.fire('Error', error.response?.data?.error || 'Login failed', 'error');
     }
