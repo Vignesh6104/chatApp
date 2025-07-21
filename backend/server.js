@@ -15,13 +15,8 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = [
-  'http://localhost:5173',
-  'https://chat-app-jet-rho-91.vercel.app',
-  'https://chat-ckr6j3mng-vignesh6104s-projects.vercel.app',
-];
+const allowedOrigins = process.env.CLIENT_URL.split(',');
 
-// CORS Middleware
 app.use(cors({
   origin: function (origin, callback) {
     if (!origin || allowedOrigins.includes(origin)) {
@@ -30,8 +25,9 @@ app.use(cors({
       callback(new Error('Not allowed by CORS'));
     }
   },
-  credentials: true,
+  credentials: true
 }));
+
 
 app.use(express.json());
 
