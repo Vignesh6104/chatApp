@@ -18,15 +18,18 @@ const PORT = process.env.PORT || 5000;
 const allowedOrigins = process.env.CLIENT_URL.split(',');
 
 app.use(cors({
-  origin: function (origin, callback) {
+  origin: (origin, callback) => {
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
+      console.log(`❌ Blocked by CORS: ${origin}`);
       callback(new Error('Not allowed by CORS'));
     }
   },
+  methods: ['GET', 'POST'],
   credentials: true
 }));
+
 
 
 app.use(express.json());
@@ -42,8 +45,10 @@ const io = new Server(server, {
   cors: {
     origin: allowedOrigins,
     methods: ['GET', 'POST'],
+    credentials: true,
   },
 });
+
 
 // Socket.IO Logic
 const onlineUsers = {};
