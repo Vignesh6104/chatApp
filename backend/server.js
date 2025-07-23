@@ -78,6 +78,18 @@ io.on('connection', (socket) => {
     }
   });
 
+  socket.on('logout', (username) => {
+  if (onlineUsers[username]) {
+    delete onlineUsers[username];
+    console.log(`👋 ${username} logged out`);
+
+    io.emit('online_users', Object.entries(onlineUsers).map(([name, id]) => ({
+      username: name,
+      socketId: id,
+    })));
+  }
+});
+
   socket.on('private_message', ({ sender, recipientSocketId, message }) => {
     if (recipientSocketId) {
       io.to(recipientSocketId).emit('receive_private_message', {

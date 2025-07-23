@@ -17,7 +17,7 @@ import './App.css';
 
 const BASE_URL = import.meta.env.VITE_API_BASE_URL;
 
-// ✅ Inner App component using useLocation
+// Inner App component using useLocation
 function AppContent() {
   const location = useLocation();
   const [feedbacks, setFeedbacks] = useState([]);
@@ -74,10 +74,10 @@ function AppContent() {
 
   return (
     <div className="App">
-      {/* ✅ Conditionally show heading */}
+      {/* Conditionally show heading */}
       {location.pathname !== '/chat' && (
         <h1>
-          <span>FEEDBACK</span> APPLICATION
+          <span>CHAT</span> APPLICATION
         </h1>
       )}
 
@@ -113,7 +113,7 @@ function AppContent() {
   );
 }
 
-// ✅ Outer App that wraps with Router
+// Outer App that wraps with Router
 function App() {
   return (
     <Router>

@@ -94,11 +94,14 @@ const Chat = () => {
   };
 
   const handleLogout = (e) => {
-    e.preventDefault();
-    localStorage.removeItem('token');
-    localStorage.removeItem('user');
-    navigate('/login');
-  };
+  e.preventDefault();
+  
+  socket.emit('logout', username);
+
+  localStorage.removeItem('token');
+  localStorage.removeItem('user');
+  navigate('/login');
+};
 
   const handleClearChat = async () => {
     try {
@@ -154,6 +157,7 @@ const Chat = () => {
           border: '1px solid crimson',
           borderRadius: '5px',
           padding: '10px',
+          color: 'white',
         }}
       >
         {messages.map((msg, index) => (
