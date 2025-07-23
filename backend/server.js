@@ -15,21 +15,26 @@ dotenv.config();
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-const allowedOrigins = process.env.CLIENT_URL.split(',');
+const allowedOrigins = [
+  "https://chat-app-57yx.vercel.app",
+  "http://localhost:5173"
+];
 
 app.use(cors({
-  origin: (origin, callback) => {
-    if (!origin || allowedOrigins.includes(origin)) {
-      callback(null, true);
-    } else {
-      console.log(`❌ Blocked by CORS: ${origin}`);
-      callback(new Error('Not allowed by CORS'));
-    }
-  },
-  methods: ['GET', 'POST'],
-  credentials: true
+  origin: allowedOrigins,
+  credentials: true,
 }));
 
+const http = require("http").createServer(app);
+const { Server } = require("socket.io");
+
+const io = new Server(http, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 
 app.use(express.json());
@@ -38,17 +43,6 @@ app.use(express.json());
 app.use('/api/auth', AuthRoute);
 app.use('/api/feedback', FeedbackRoute);
 app.use('/api/chat', ChatRoute);
-
-// HTTP Server & Socket.io
-const server = http.createServer(app);
-const io = new Server(server, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ['GET', 'POST'],
-    credentials: true,
-  },
-});
-
 
 // Socket.IO Logic
 const onlineUsers = {};
