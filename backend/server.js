@@ -17,6 +17,7 @@ const PORT = process.env.PORT || 5000;
 
 const allowedOrigins = [
   "https://chat-app-57yx.vercel.app",
+  "https://chat-app-oqgp.vercel.app/",
   "http://localhost:5173"
 ];
 
