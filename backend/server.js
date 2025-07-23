@@ -25,8 +25,7 @@ app.use(cors({
   credentials: true,
 }));
 
-const http = require("http").createServer(app);
-const { Server } = require("socket.io");
+const server = require("http").createServer(app);
 
 const io = new Server(http, {
   cors: {
