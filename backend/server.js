@@ -20,28 +20,28 @@ const allowedOrigins = [
   "http://localhost:5173"
 ];
 
+// Middleware
 app.use(cors({
   origin: allowedOrigins,
   credentials: true,
 }));
-
-const server = require("http").createServer(app);
-
-const io = new Server(http, {
-  cors: {
-    origin: allowedOrigins,
-    methods: ["GET", "POST"],
-    credentials: true,
-  },
-});
-
-
 app.use(express.json());
 
 // Routes
 app.use('/api/auth', AuthRoute);
 app.use('/api/feedback', FeedbackRoute);
 app.use('/api/chat', ChatRoute);
+
+// Create HTTP server and attach Socket.IO
+const server = http.createServer(app); // ✅ Fix: used correctly here
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    methods: ["GET", "POST"],
+    credentials: true,
+  },
+});
 
 // Socket.IO Logic
 const onlineUsers = {};
@@ -77,16 +77,16 @@ io.on('connection', (socket) => {
   });
 
   socket.on('logout', (username) => {
-  if (onlineUsers[username]) {
-    delete onlineUsers[username];
-    console.log(`👋 ${username} logged out`);
+    if (onlineUsers[username]) {
+      delete onlineUsers[username];
+      console.log(`👋 ${username} logged out`);
 
-    io.emit('online_users', Object.entries(onlineUsers).map(([name, id]) => ({
-      username: name,
-      socketId: id,
-    })));
-  }
-});
+      io.emit('online_users', Object.entries(onlineUsers).map(([name, id]) => ({
+        username: name,
+        socketId: id,
+      })));
+    }
+  });
 
   socket.on('private_message', ({ sender, recipientSocketId, message }) => {
     if (recipientSocketId) {

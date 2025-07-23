@@ -1,10 +1,8 @@
 import React, { useState, useEffect } from 'react';
-import { io } from 'socket.io-client';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
-
-const socket = io(import.meta.env.VITE_SOCKET_URL || 'http://localhost:5000');
+import socket from '../Socket';
 
 const Chat = () => {
   const [message, setMessage] = useState('');
@@ -28,8 +26,10 @@ const Chat = () => {
       return;
     }
 
+    // Register user on server
     socket.emit('register_user', username);
 
+    // Load chat history
     axios
       .get(`${import.meta.env.VITE_API_BASE_URL}/api/chat/messages`)
       .then((res) => {
@@ -39,6 +39,7 @@ const Chat = () => {
         console.error('❌ Failed to load chat history', err);
       });
 
+    // Event listeners
     socket.on('receive_message', (data) => {
       setMessages((prev) => [...prev, data]);
     });
@@ -65,6 +66,7 @@ const Chat = () => {
       socket.off('user_typing');
       socket.off('user_stopped_typing');
       socket.off('online_users');
+      socket.emit('logout', username);
     };
   }, [navigate, username, typingUser]);
 
@@ -94,14 +96,12 @@ const Chat = () => {
   };
 
   const handleLogout = (e) => {
-  e.preventDefault();
-  
-  socket.emit('logout', username);
-
-  localStorage.removeItem('token');
-  localStorage.removeItem('user');
-  navigate('/login');
-};
+    e.preventDefault();
+    socket.emit('logout', username);
+    localStorage.removeItem('token');
+    localStorage.removeItem('user');
+    navigate('/login');
+  };
 
   const handleClearChat = async () => {
     try {
