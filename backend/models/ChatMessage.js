@@ -1,17 +1,19 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const ChatMessageSchema = new mongoose.Schema(
-  {
-    user: {
-      type: String,
-      required: true,
-    },
-    message: {
-      type: String,
-      required: true,
-    },
+const ChatMessage = sequelize.define('ChatMessage', {
+  user: {
+    type: DataTypes.STRING, // Keeping as string to match existing logic where username is stored
+    allowNull: false
   },
-  { timestamps: true }
-);
+  message: {
+    type: DataTypes.TEXT,
+    allowNull: false
+  },
+  imageUrl: {
+    type: DataTypes.STRING,
+    allowNull: true
+  }
+});
 
-module.exports = mongoose.model('ChatMessage', ChatMessageSchema);
+module.exports = ChatMessage;

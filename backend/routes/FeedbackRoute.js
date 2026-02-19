@@ -7,14 +7,14 @@ const authMiddleware = require('../middleware/auth');
 router.post('/', authMiddleware, async (req, res) => {
   try {
     const { name, feedback } = req.body;
-    const newFeedback = new Feedback({
+    await Feedback.create({
       name,
       feedback,
-      user: req.user.id
+      user: req.user.id.toString() // Ensure it's stored as string if schema expects it, or change schema
     });
-    await newFeedback.save();
     res.status(201).json({ message: 'Feedback submitted successfully' });
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });
@@ -22,9 +22,12 @@ router.post('/', authMiddleware, async (req, res) => {
 // GET all feedbacks (public)
 router.get('/', async (req, res) => {
   try {
-    const feedbacks = await Feedback.find().sort({ createdAt: -1 });
+    const feedbacks = await Feedback.findAll({
+      order: [['createdAt', 'DESC']]
+    });
     res.status(200).json(feedbacks);
   } catch (err) {
+    console.error(err);
     res.status(500).json({ error: 'Server error' });
   }
 });

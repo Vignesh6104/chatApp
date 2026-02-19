@@ -1,20 +1,19 @@
-const mongoose = require('mongoose');
+const { DataTypes } = require('sequelize');
+const sequelize = require('../config/database');
 
-const feedbackSchema = new mongoose.Schema({
+const Feedback = sequelize.define('Feedback', {
   name: {
-    type: String,
-    required: true,
-    trim: true
+    type: DataTypes.STRING,
+    allowNull: false
   },
   feedback: {
-    type: String,
-    required: true,
-    trim: true
+    type: DataTypes.TEXT,
+    allowNull: false
   },
-  createdAt: {
-    type: Date,
-    default: Date.now
+  user: {
+    type: DataTypes.STRING, // Storing user ID or name as string
+    allowNull: true
   }
 });
 
-module.exports = mongoose.model('Feedback', feedbackSchema);
+module.exports = Feedback;
