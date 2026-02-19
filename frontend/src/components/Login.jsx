@@ -18,7 +18,7 @@ const Login = ({ setIsLoggedIn }) => {
     try {
       const res = await axios.post(`${BASE_URL}/api/auth/login`, form);
 
-      // ✅ Store token and user name in localStorage
+      // Store token and user name in localStorage
       localStorage.setItem('token', res.data.token);
       localStorage.setItem('user', res.data.user);
 
@@ -51,16 +51,20 @@ const Login = ({ setIsLoggedIn }) => {
           required
         />
         <button type="submit">Login</button>
-        <button
-          style={{ marginLeft: '20px' }}
-          onClick={(e) => {
-            e.preventDefault();
-            navigate('/register');
-          }}
-          className="register-btn"
-        >
-          Register User
-        </button>
+        <div className="text-center mt-4">
+            <span style={{color: 'var(--text-primary)', marginRight: '10px'}}>Don't have an account?</span>
+            <button
+            type="button"
+            onClick={(e) => {
+                e.preventDefault();
+                navigate('/register');
+            }}
+            className="register-btn"
+            style={{background: 'transparent', color: 'var(--accent-color)', padding: 0, boxShadow: 'none'}}
+            >
+            Register
+            </button>
+        </div>
       </form>
     </div>
   );

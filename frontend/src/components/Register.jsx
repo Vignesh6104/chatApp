@@ -54,6 +54,19 @@ const Register = () => {
           required
         />
         <button type="submit">Register</button>
+        <div className="text-center mt-4">
+          <span style={{ color: 'var(--text-primary)', marginRight: '10px' }}>Already have an account?</span>
+          <button
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              navigate('/login');
+            }}
+            style={{ background: 'transparent', color: 'var(--accent-color)', padding: 0, boxShadow: 'none' }}
+          >
+            Login
+          </button>
+        </div>
       </form>
     </div>
   );

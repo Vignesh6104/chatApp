@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import Swal from 'sweetalert2';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
@@ -11,12 +11,21 @@ const Chat = () => {
   const [typingUser, setTypingUser] = useState('');
   const [onlineUsers, setOnlineUsers] = useState([]);
   const [selectedUser, setSelectedUser] = useState(null);
+  const messagesEndRef = useRef(null);
 
   const navigate = useNavigate();
   let username = localStorage.getItem('user');
   try {
     username = JSON.parse(username)?.name || username;
-  } catch (err) {}
+  } catch (err) { }
+
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+  };
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
     const token = localStorage.getItem('token');
@@ -118,12 +127,13 @@ const Chat = () => {
   };
 
   return (
-    <div className="auth-container">
-      <h1><span>CHAT</span> ROOM</h1>
-
-      <div>
-        <strong><h2>ONLINE USERS :</h2></strong>
-        <ul>
+    <div className="chat-container">
+      {/* Sidebar - Online Users */}
+      <div className="sidebar">
+        <div className="sidebar-header">
+          <h3>Online Users ({onlineUsers.length})</h3>
+        </div>
+        <ul className="user-list">
           {onlineUsers.map((userObj, index) => (
             <li
               key={index}
@@ -131,63 +141,63 @@ const Chat = () => {
                 setSelectedUser(userObj.username);
                 setRecipientSocketId(userObj.socketId);
               }}
-              style={{
-                cursor: 'pointer',
-                color: selectedUser === userObj.username ? 'blue' : 'black',
-              }}
+              className={`user-item ${selectedUser === userObj.username ? 'active' : ''}`}
             >
+              <div className="user-status"></div>
               {userObj.username} {userObj.username === username && '(You)'}
             </li>
           ))}
         </ul>
-      </div>
-
-      {typingUser && (
-        <div style={{ fontStyle: 'italic', color: 'gray' }}>
-          {typingUser} is typing...
+        <div style={{ padding: '1rem' }}>
+          <button onClick={handleLogout} style={{ width: '100%', backgroundColor: '#ff6b6b' }}>Logout</button>
         </div>
-      )}
-
-      <div
-        style={{
-          maxHeight: '300px',
-          overflowY: 'auto',
-          marginBottom: '50px',
-          marginTop: '50px',
-          border: '1px solid crimson',
-          borderRadius: '5px',
-          padding: '10px',
-          color: 'white',
-        }}
-      >
-        {messages.map((msg, index) => (
-          <div key={index}>
-            <strong>{msg.private ? '(Private) ' : ''}{msg.user}:</strong> {msg.message}
-            {msg.createdAt && (
-              <span style={{ fontSize: '0.8em', color: 'gray', marginLeft: '10px' }}>
-                ({new Date(msg.createdAt).toLocaleTimeString()})
-              </span>
-            )}
-          </div>
-        ))}
       </div>
 
-      <form onSubmit={handleSend}>
-        <input
-          type="text"
-          placeholder="Type your message..."
-          value={message}
-          onChange={handleTyping}
-          required
-        />
-        <button type="submit">Send</button>
-        <button style={{ marginLeft: '10px', marginBottom: '10px' }} onClick={handleClearChat} type="button">
-          Clear Chat
-        </button>
-        <button style={{ marginLeft: '10px' }} onClick={handleLogout}>
-          Logout
-        </button>
-      </form>
+      {/* Main Chat Area */}
+      <div className="chat-area">
+        <div className="chat-header">
+          <h2>{selectedUser ? `Chatting with ${selectedUser}` : 'Global Chat Room'}</h2>
+          <button onClick={handleClearChat} style={{ fontSize: '0.8rem', padding: '0.5rem 1rem', background: 'transparent', color: '#ff6b6b', border: '1px solid #ff6b6b' }}>Clear History</button>
+        </div>
+
+        <div className="messages-list">
+          {messages.map((msg, index) => {
+            const isMe = msg.user === username;
+            return (
+              <div key={index} className={`message-bubble ${isMe ? 'sent' : 'received'}`}>
+                <div style={{ fontWeight: 'bold', fontSize: '0.8rem', marginBottom: '2px' }}>
+                  {msg.private && <span style={{ color: '#ffdd57', marginRight: '5px' }}>🔒</span>}
+                  {isMe ? 'You' : msg.user}
+                </div>
+                {msg.message}
+                {msg.createdAt && (
+                  <span className="message-meta">
+                    {new Date(msg.createdAt).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                  </span>
+                )}
+              </div>
+            );
+          })}
+          {typingUser && (
+            <div style={{ fontStyle: 'italic', color: 'gray', fontSize: '0.9rem', padding: '0 1rem' }}>
+              {typingUser} is typing...
+            </div>
+          )}
+          <div ref={messagesEndRef} />
+        </div>
+
+        <form onSubmit={handleSend} className="input-area">
+          <input
+            type="text"
+            placeholder={recipientSocketId ? `Message ${selectedUser}...` : "Type a message..."}
+            value={message}
+            onChange={handleTyping}
+            required
+            autoFocus
+          />
+          <button type="submit">Send</button>
+        </form>
+      </div>
     </div>
   );
 };
