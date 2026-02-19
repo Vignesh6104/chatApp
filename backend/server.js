@@ -34,7 +34,7 @@ app.use('/api/feedback', FeedbackRoute);
 app.use('/api/chat', ChatRoute);
 
 // Create HTTP server and attach Socket.IO
-const server = http.createServer(app); // ✅ Fix: used correctly here
+const server = http.createServer(app);
 
 const io = new Server(server, {
   cors: {
